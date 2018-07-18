@@ -268,3 +268,78 @@ This tells the system that we want the left side of button B to be constrained t
 View Tree: The hierarchy of views in the layout.
 It is always good practice to run the lint tool on your layout files to search for possible view hierarchy optimizations. Lint has replaced the Layoutopt tool and has much greater functionality.
 Another benefit of Lint is that it is integrated into Android Studio. Lint automatically runs whenever you compile your program. With Android Studio, you can also run lint inspections for a specific build variant, or for all build variants.
+
+### What is the difference between ListView and RecyclerView? [Detail](https://www.truiton.com/2015/03/android-recyclerview-vs-listview-comparison/)
+* View Holder Compulsory - Major drawback of not using view holders could lead to a heavy operation of finding views by ids every time. Which resulted in laggy ListViews.This problem is solved in RecylerView by the use of RecyclerView.ViewHolder class. A ViewHolder holds the reference to the id of the view resource and calls to the resource will not be required. Thus performance of the application increases.
+* Layouts - ListView only Vertical List can be implemented.RecyclerView supports three types of predefined Layout Managers:
+    1. LinearLayoutManager – This is the most commonly used layout manager in case of RecyclerView. Through this, we can create both horizontal and vertical scroll lists.
+    2. StaggeredGridLayoutManager – Through this layout manager, we can create staggered lists. Just like the Pinterest screen.
+    3. GridLayoutManager– This layout manager can be used to display grids, like any picture gallery.
+* Item Animator - In a ListView, as such there are no special provisions through which one can animate, addition or deletion of items. 
+
+### What is the ViewHolder pattern? Why should we use it?
+ViewHolder is a design pattern which can be applied when using a custom adapter. 
+Every time when the adapter calls getView() method, the findViewById() method is also called. This is a very intensive work for the mobile CPU and so affects the performance of the application and the battery consumption increases.
+
+To avoid this, ViewHolder is used. A ViewHolder holds the reference to the id of the view resource and calls to the resource will not be required. Thus performance of the application increases.
+
+### What is SnapHelper?
+SnapHelper is a helper class that helps in snapping any child view of the RecyclerView. For example, you can snap the firstVisibleItem of the RecyclerView as you must have seen in the play store application that the firstVisibleItem will be always completely visible when scrolling comes to the idle position.
+
+### What is Dialog in Android?
+A dialog is a small window that prompts the user to make a decision or enter additional information. A dialog does not fill the screen and is normally used for modal events that require users to take an action before they can proceed.
+
+### What is Toast in Android?
+Andorid Toast can be used to display information for the short period of time. A toast contains message to be displayed quickly and disappears after sometime. 
+`Toast.makeText(getApplicationContext(),"Hello Javatpoint",Toast.LENGTH_SHORT).show();`
+
+### What the difference between Dialog and Dialog Fragment?
+Using DialogFragment to manage the dialog ensures that it correctly handles lifecycle events such as when the user presses the Back button or rotates the screen. The DialogFragment class also allows you to reuse the dialog's UI as an embeddable component in a larger UI, just like a traditional Fragment (such as when you want the dialog UI to appear differently on large and small screens).
+
+As a DialogFragment is also a Fragment that displays a dialog window, floating on top of its activity’s window. This fragment contains a Dialog object, which it displays as appropriate based on the fragment’s state.
+
+### What is Intent?
+An Intent is an "intention" to perform an action; in other words, a messaging object you can use to request an action from another app component.Intents allow you to interact with components from the same applications as well as with components contributed by other applications. 
+
+### What is an Implicit Intent?
+
+Implicit Intents do not directly specify the Android components which should be called , it only specifies action to be performed.An Uri can be used with the implicit intent to specify data type.
+
+for example
+
+`Intent intent = new Intent(ACTION_VIEW,Uri.parse("http://www.google.com");`
+
+this will cause web browser to open a webpage .Android system searches for all components(displays all browsers installed) which are registered for the specific action and the data type.If many components are found then the user can select which component to use.
+
+### What is an Explicit Intent?
+Explicit intents are used in the application itself wherein one activity can switch to other activty.
+Example 
+`Intent intent = new Intent(this,Target.class);`
+
+This causes switching of activity from current context to the target activity. Explicit Intents can also be used to pass data to other activity using putExtra method and retrieved by target activity by `getIntent().getExtras()` methods.
+
+### What is a BroadcastReceiver?
+A broadcast receiver is a component that responds to system-wide broadcast announcements. Many broadcasts originate from the system—for example, a broadcast announcing that the screen has turned off, the battery is low, or a picture was captured. Applications can also initiate broadcasts—for example, to let other applications know that some data has been downloaded to the device and is available for them to use. Although broadcast receivers don't display a user interface, they may create a status bar notification to alert the user when a broadcast event occurs.
+
+### What is a LocalBroadcastManager?
+Helper to register for and send broadcasts of Intents to local objects within your process.You know that the data you are broadcasting won't leave your app, so don't need to worry about leaking private data.
+
+### What is the function of an IntentFilter?
+An intent filter declares the capabilities of its parent component — what an activity or service can do and what types of broadcasts a receiver can handle.
+
+### What is a Sticky Intent?
+Sticky Intent is using for broadcast receiver for unknown time, means it may occur anytime when the situation occur.
+Sticks with android, for future broad cast listeners. For example if BATTERY_LOW event occurs then that intent will be stick with android so that if any future user requested for BATTER_LOW, it will be fired;
+
+### What is a PendingIntent?
+Pending Intent is using for broadcast receiver for a fixed time.Fixed time means that system knows that when the receiver would fire.
+
+### Describe how broadcasts and intents work to be able to pass messages around your app?
+[Link](https://stackoverflow.com/a/7276808/9984145)
+
+### What are the different types of Broadcasts?
+* You can compare a sticky broadcast with a sticky note. Someone posts it and you can read when you pass by/your application starts - regardless of when it was posted.
+
+* An ordered broadcast is like passing a note - it passes from person/application to person/application. Anywhere in the chain the recipient can elect to cancel the broadcast preventing the rest of the chain from seeing it.
+
+* A normal broadcast.. well, just sends to everyone that's allowed & registered to listen to it.
