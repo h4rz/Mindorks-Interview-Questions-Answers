@@ -176,4 +176,95 @@ public class FragB extends Fragment{
     }
 }
 ```
-### What is retained Fragment?[Answer](https://www.androiddesignpatterns.com/2013/04/retaining-objects-across-config-changes.html)
+### What is retained Fragment? [Answer](https://www.androiddesignpatterns.com/2013/04/retaining-objects-across-config-changes.html)
+
+### What is View in Android?
+The View class is a superclass for all GUI components in Android. For instance, the TextView class which is used to display text labels in Android apps is a subclass of View. Android contains the following commonly used View subclasses:
+
+* TextView
+* EditText
+* ImageView
+* ProgressBar
+* Button
+* ImageButton
+* CheckBox
+* DatePicker
+These are only some of the many, many subclasses of the View class.
+
+### Difference between View.GONE and View.INVISIBLE?
+* INVISIBLE - This view is invisible, but it still takes up space for layout purposes.
+* GONE - This view is invisible, and it doesn’t take any space for layout purposes.
+
+### Can you create custom views? How?
+If none of the prebuilt widgets or layouts meets your needs, you can create your own View subclass. If you only need to make small adjustments to an existing widget or layout, you can simply subclass the widget or layout and override its methods.
+
+Creating your own View subclasses gives you precise control over the appearance and function of a screen element.
+
+You could combine a group of View components into a new single component, perhaps to make something like a ComboBox (a combination of popup list and free entry text field), a dual-pane selector control (a left and right pane with a list in each where you can reassign which item is in which list), and so on.
+
+*Creating your own View components:*
+
+> 1. Extend an existing View class or subclass with your own class.
+> 2. Override some of the methods from the superclass. The superclass methods to override start with 'on', for example, onDraw(), onMeasure(), and onKeyDown(). This is similar to the on... events in Activity or ListActivity that you override for lifecycle and other functionality hooks.
+> 3. Use your new extension class. Once completed, your new extension class can be used in place of the view upon which it was based.
+
+### What are ViewGroups and how they are different from the Views?
+The ViewGroup class is a subclass of the View class. ViewGroup instances work as containers for View instances to group View instances together. Android contains the following commonly used ViewGroup subclasses:
+
+* LinearLayout
+* RelativeLayout
+* ListView
+* GridView
+
+### What is a canvas? [Example](https://android.jlelse.eu/canvas-the-real-play-ground-android-c0faa4b79943)
+When it comes to create something which is not available on the layout.xml as native component, developers face real challenge. When drawables are not enough and styles are not sufficient, what we left with is the option of Drawing it!
+
+Canvas — the real play ground wherein a developer can create any type of view or animation.
+
+The Canvas class holds the "draw" calls. To draw something, you need 4 basic components: 
+* A Bitmap to hold the pixels, 
+* a Canvas to host the draw calls (writing into the bitmap), 
+* a drawing primitive (e.g. Rect, Path, text, Bitmap), 
+* a paint (to describe the colors and styles for the drawing).
+
+### What is a SurfaceView? [Link](https://google-developer-training.gitbooks.io/android-developer-advanced-course-practicals/unit-5-advanced-graphics-and-views/lesson-11-canvas/11-2-p-create-a-surfaceview/11-2-p-create-a-surfaceview.html)
+In Android, all simple layout views are all drawn on the same GUI thread which is also used for all user interaction. So if we need to update GUI rapidly or if the rendering takes too much time and affects user experience then we should use SurfaceView.
+
+The Android SurfaceView provides a dedicated drawing surface embedded inside of a view hierarchy. You can control the format of this surface, however, the SurfaceView takes care of placing the surface at the correct location on the screen.
+
+When you create a custom view and override its onDraw() method, all drawing happens on the UI thread. Drawing on the UI thread puts an upper limit on how long or complex your drawing operations can be, because your app has to complete all its work for every screen refresh.One option is to move some of the drawing work to a different thread using a SurfaceView.
+
+* All the views in your view hierarchy are rendered onto one Surface in the UI thread.
+* In the context of the Android framework, Surface refers to a lower-level drawing surface whose contents are eventually displayed on the user's screen.
+* To draw, start a thread, lock the SurfaceView's canvas, do your drawing, and post it to the Surface.
+
+![Image](https://google-developer-training.gitbooks.io/android-developer-advanced-course-practicals/images/11-2-p-create-a-surfaceview/dg_Surfaceview_surface.png)
+
+### Relative Layout vs Linear Layout.
+* Linear Layout  -  Arranges elements either vertically or horizontally. i.e. in a row or column.
+* Relative Layout  - Arranges elements relative to parent or other elements. When you have scenarios like - place this TextView in right of ImageView and below particular EditText - Relative Layout can help in that scenarios.
+
+### Tell about Constraint Layout
+A ConstraintLayout is a ViewGroup which allows you to position and size widgets in a flexible way.
+
+The aim of the ConstraintLayout is to help reduce the number of nested views, which will improve the performance of our layout files.
+
+Relative positioning is one of the basic building block of creating layouts in ConstraintLayout. Those constraints allow you to position a given widget relative to another one. You can constrain a widget on the horizontal and vertical axis:
+
+Horizontal Axis: left, right, start and end sides
+Vertical Axis: top, bottom sides and text baseline
+The general concept is to constrain a given side of a widget to another side of any other widget.
+
+For example, in order to position button B to the right of button A (Fig. 1): 
+![image](https://developer.android.com/reference/android/support/constraint/resources/images/relative-positioning.png)
+```
+<Button android:id="@+id/buttonA" ... />
+         <Button android:id="@+id/buttonB" ...
+                 app:layout_constraintLeft_toRightOf="@+id/buttonA" />
+```  
+This tells the system that we want the left side of button B to be constrained to the right side of button A. Such a position constraint means that the system will try to have both sides share the same location. 
+
+### Do you know what is the view tree? How can you optimize its depth? [Link1](https://developer.android.com/training/improving-layouts/optimizing-layout) [Link2](https://developer.android.com/studio/debug/layout-inspector)
+View Tree: The hierarchy of views in the layout.
+It is always good practice to run the lint tool on your layout files to search for possible view hierarchy optimizations. Lint has replaced the Layoutopt tool and has much greater functionality.
+Another benefit of Lint is that it is integrated into Android Studio. Lint automatically runs whenever you compile your program. With Android Studio, you can also run lint inspections for a specific build variant, or for all build variants.
