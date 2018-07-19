@@ -363,3 +363,171 @@ Here are example when you would use this job scheduler:
 * Task that are not critical or user facing
 * Tasks that should be running on a regular basis as batch where the timing is not critical
 
+### How can two distinct Android apps interact?
+* With the help of implicit intent [Detail](https://developer.android.com/training/basics/intents/sending)
+For example, here's how to create an intent to initiate a phone call using the Uri data to specify the telephone number:
+```
+Uri number = Uri.parse("tel:5551234");
+Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+startActivity(callIntent);
+```
+When your app invokes this intent by calling startActivity(), the Phone app initiates a call to the given phone number.
+*You can also start another activity and receive a result back. To receive a result, call startActivityForResult() (instead of startActivity()).*
+
+### Is it possible to run an Android app in multiple processes? How? [Detail](https://medium.com/@rotxed/going-multiprocess-on-android-52975ed8863c)
+Yes with the help of `android:process` attribute.
+The process attribute can be applied to activities, services, content providers and broadcast receivers and specifies what process that particular component should be executed in.
+```
+<service
+      android:name=".MusicService"
+      android:process=":music"
+    />
+```
+Consider this: your music player is running in the background and the music is playing; suddenly, the system needs to free some memory (because Facebook, that’s why). Since the service that plays the music runs on another process, the OS is going to kill the main process first (the one that runs mainly your app UI), leaving the music playing in the other process.
+
+### What is Android Interface Definition Language (AIDL)?
+It allows you to define the programming interface that both the client and service agree upon in order to communicate with each other using interprocess communication (IPC). On Android, one process cannot normally access the memory of another process. So to talk, they need to decompose their objects into primitives that the operating system can understand, and marshall the objects across that boundary for you. The code to do that marshalling is tedious to write, so Android handles it for you with AIDL.
+
+### Enumerate the steps in creating a bounded service through AIDL. [Detail](https://developer.android.com/guide/components/aidl)
+You must define your AIDL interface in an .aidl file using the Java programming language syntax, then save it in the source code (in the src/ directory) of both the application hosting the service and any other application that binds to the service.
+
+To create a bounded service using AIDL, follow these steps:
+
+1. Create the .aidl file
+This file defines the programming interface with method signatures.
+
+2. Implement the interface
+The Android SDK tools generate an interface in the Java programming language, based on your .aidl file. This interface has an inner abstract class named Stub that extends Binder and implements methods from your AIDL interface. You must extend the Stub class and implement the methods.
+
+3. Expose the interface to clients
+Implement a Service and override onBind() to return your implementation of the Stub class.
+
+### What can you use for background processing in Android?[Detail](https://medium.com/elevate-by-lateral-view/background-processing-in-android-575fd4ecf769)
+* Thread & Handler
+* IntentService
+* AsyncTask
+
+### What is a ContentProvider and what is it typically used for?
+A content provider presents data to external applications as one or more tables that are similar to the tables found in a relational database. 
+* Sharing access to your application data with other applications
+* Sending data to a widget
+* Loading data in your UI using a CursorLoader
+
+### How would you perform a long-running operation in an application?
+AsyncTask cannot be used coz of memory leaks and it is used for short task.
+IntentService - This is the defacto choice for long running processing on Android, a good example would be to upload or download large files. The upload and download may continue even if the user exits the app and you certainly do not want to block the user from being able to use the app while these tasks are going on.
+
+### Why should you avoid to run non-ui code on the main thread?
+### What is ANR (Android Not Responding)? How can the ANR be prevented?
+If non ui code running on main/ui thread hogs that single thread and prevents user interaction (for more than 5 seconds), it causes Android to throw up the infamous Android Not Responsive (ANR) error.
+
+ Your application must create other threads and put long running work on non-UI threads.
+The non-UI thread then handles long running processing – like downloading a file – while the UI thread sticks to displaying the UI and reacting to user events.
+
+### Update UI from non ui thread
+have the non-UI thread send UI update requests to be executed on the UI thread.
+
+* Use runOnUiThread( ) method call
+* Use post( ) method call
+* Use the Handler framework
+* Use a Broadcasts and BroadcastReceiver (optionally with LocalBroadcastManager)
+* Use an AsyncTask’s onProgressUpdate( ) method
+
+### What is an AsyncTask? [Detail](https://www.upwork.com/hiring/mobile/why-you-should-use-asynctask-in-android-development/)
+Android defines AsyncTask as “a class that extends the Object class to allow short operations to run asynchronously in the background.” With “doInBackground” and “onPostExecute,” Async can run tasks asynchronously on new threads.
+
+When an asynchronous task is executed, the task goes through 4 steps:
+
+* **onPreExecute**: a step used to set up the task
+* **doInBackground**: a step used to perform the actual task
+* **onProgressUpdate**: a step used to update the current progress status of the task that is being performed in doInBackground
+* **onPostExecute**: once doInBackground finishes executing the task, this step delivers the result back to the main UI thread and stops the AsyncTask process
+
+### What are the problems in asynctask?
+* When an app is rotated, the entire Activity is destroyed and recreated. When the Activity is restarted, your AsyncTask’s reference to the Activity is invalid, so onPostExecute() will have no effect on the new Activity. 
+* You have to manage the cancellation of AsyncTasks yourself; otherwise you run the risk of bogging down your app with unnecessary background tasks, or of leaking memory. ` AsyncTask.cancel()`
+
+### When would you use java thread instead of an asynctask?
+**Use AsyncTask for:**
+
+* Simple network operations which do not require downloading a lot of data
+* Disk-bound tasks that might take more than a few milliseconds
+
+**Use Java threads for:**
+
+* Network operations which involve moderate to large amounts of data (either uploading or downloading)
+* High-CPU tasks which need to be run in the background
+* Any task where you want to control the CPU usage relative to the GUI thread
+
+### What is the relationship between the life cycle of an AsyncTask and an Activity? What problems can this result in? How can these problems be avoided?
+An AsyncTask is not tied to the life cycle of the Activity that contains it. So, for example, if you start an AsyncTask inside an Activity and the user rotates the device, the Activity will be destroyed (and a new Activity instance will be created) but the AsyncTask will not die but instead goes on living until it completes.
+
+Then, when the AsyncTask does complete, rather than updating the UI of the new Activity, it updates the former instance of the Activity (i.e., the one in which it was created but that is not displayed anymore!). This can lead to an Exception and memory leaks.
+
+For long-running background tasks, a different mechanism like service or intent service should be used.
+
+### How do you handle bitmaps in Android as it takes too much memory?
+[Manual](https://android.jlelse.eu/loading-large-bitmaps-efficiently-in-android-66826cd4ad53)
+Instead of loading the whole bitmap a reduced resolution version is loaded (via a technique called subsampling). Android bitmap loading is achieved via the BitmapFactory class. The Options settings passed to the class can reduce the size of the bitmap, saving on memory usage.
+
+* [Glide](https://github.com/bumptech/glide)
+* [Picasso](http://square.github.io/picasso/)
+* Fresco(https://github.com/facebook/fresco)
+
+### Tell about the Bitmap pool. [Detail](https://blog.mindorks.com/how-to-use-bitmap-pool-in-android-56c71a55533c)
+By using the Bitmap pool to avoid continuous allocation and deallocation of memory in your application, you reduce GC overhead, which results in a smooth-running application.
+
+One way to do this is to use inBitmap (which reuses bitmap memory).
+
+### How to play sounds in Android? [Detail](http://www.vogella.com/tutorials/AndroidMedia/article.html)
+**SoundPool** can be used for small audio clips. It can repeat sounds and play several sounds simultaneously. The sound files played with SoundPool should not exceed 1 MB.
+**MediaPlayer** is better suited for longer music and movies.
+
+### What is ORM? How does it work? [Detail](https://dzone.com/articles/a-quick-guide-to-using-popular-orm-for-android-dev)
+Object-relational mapping (ORM) is a programming technique in which a metadata descriptor is used to connect object code to a relational database. Object code is written in object-oriented programming (OOP) languages such as Java or C#.
+
+![ORM](https://dzone.com/storage/temp/3992420-orm.png)
+
+### How would you preserve Activity state during a screen rotation? [Detail](https://www.androiddesignpatterns.com/2013/04/retaining-objects-across-config-changes.html)
+Manage the Object Inside a Retained Fragment
+
+### What are different ways to store data in your Android app?
+* Internal file storage: Store app-private files on the device file system.
+* External file storage: Store files on the shared external file system. This is usually for shared user files, such as photos.
+* Shared preferences: Store private primitive data in key-value pairs.
+* Databases: Store structured data in a private database.
+
+### What is the onTrimMemory() method?
+onTrimMemory(): Called when the operating system has determined that it is a good time for a process to trim unneeded memory from its process. This will happen for example when it goes in the background and there is not enough memory to keep as many background processes running as desired.
+
+### How does the OutOfMemory happens?
+* Java heap space: when trying to allocate an object or an array larger than maximum continuous free block in either of heap generations;
+* GC overhead limit exceeded: when the proportion of time JVM spends doing garbage collection becomes too high (see GCTimeLimit, GCHeapFreeLimit);
+* Requested array size exceeds VM limit: when trying to allocate an array with length larger than Integer.MAX_VALUE - 2
+
+### How do you find memory leaks in Android applications? [Detail](https://mindorks.com/blog/detecting-and-fixing-memory-leaks-in-android)
+[LeakCanary](https://github.com/square/leakcanary) - A memory leak detection library for Android and Java.
+
+### How to reduce battery usage in an android application?
+[Answer](https://blog.mindorks.com/battery-optimization-for-android-apps-f4ef6170ff70)
+
+### How did you support different types of resolutions?
+[Answer](https://developer.android.com/training/multiscreen/screensizes)
+
+For example, The following is a list of resource directories in an application that provides different layout designs for different screen sizes and different bitmap drawables for small, medium, high, and extra high density screens.
+```
+res/layout/my_layout.xml             // layout for normal screen size ("default")
+res/layout-small/my_layout.xml       // layout for small screen size
+res/layout-large/my_layout.xml       // layout for large screen size
+res/layout-xlarge/my_layout.xml      // layout for extra large screen size
+res/layout-xlarge-land/my_layout.xml // layout for extra large in landscape orientation
+
+res/drawable-mdpi/my_icon.png        // bitmap for medium density
+res/drawable-hdpi/my_icon.png        // bitmap for high density
+res/drawable-xhdpi/my_icon.png       // bitmap for extra high density
+```
+
+Basically we are mainly this things by three ways. [Link](http://www.tothenew.com/blog/handle-multiple-screen-sizes-in-android/)
+1. Explicitly declare in the manifest which screen sizes your application supports.
+2. Provide different layouts for different screen sizes.
+3. Provide different bitmap drawables for different screen densities.
