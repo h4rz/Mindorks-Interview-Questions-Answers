@@ -337,9 +337,29 @@ Pending Intent is using for broadcast receiver for a fixed time.Fixed time means
 ### Describe how broadcasts and intents work to be able to pass messages around your app?
 [Link](https://stackoverflow.com/a/7276808/9984145)
 
-### What are the different types of Broadcasts?
-* You can compare a sticky broadcast with a sticky note. Someone posts it and you can read when you pass by/your application starts - regardless of when it was posted.
+### What are the different types of Broadcasts? [Link](https://www.edureka.co/blog/android-tutorials-broadcast-receivers/)
+* Ordered Broadcasts: These broadcasts are synchronous, and therefore follow a specific order. The order is defined using android: priority attribute. The receivers with greater priority would receive the broadcast first. In case there are receivers with same priority levels, the broadcast would not follow an order. Each receiver (when it receives the broadcast) can either pass on the notification to the next one, or abort the broadcast completely. On abort, the notification would not be passed on to the receivers next in line.
 
-* An ordered broadcast is like passing a note - it passes from person/application to person/application. Anywhere in the chain the recipient can elect to cancel the broadcast preventing the rest of the chain from seeing it.
+* Normal Broadcasts: Normal broadcasts are not orderly. Therefore, the registered receivers often run all at the same time. This is very efficient, but the Receivers are unable to utilize the results.
 
-* A normal broadcast.. well, just sends to everyone that's allowed & registered to listen to it.
+### Difference between Activity Intent and Broadcasting Intent
+You must remember that Broadcasting Intents are different from the Intents used to start an Activity or a Service. The intent used to start an Activity makes changes to an operation the user is interacting with, so the user is aware of the process. However, in case of broadcasting intent, the operation runs completely in the background, and is therefore invisible to the user.
+
+### What is Serivce?
+A service is a component that runs in the background to perform long-running operations without needing to interact with the user and it works even if application is destroyed. A service can essentially take two states −
+* Started - A service is started when an application component, such as an activity, starts it by calling startService(). Once started, a service can run in the background indefinitely, even if the component that started it is destroyed.
+* Bound - A service is bound when an application component binds to it by calling bindService(). A bound service offers a client-server interface that allows components to interact with the service, send requests, get results, and even do so across processes with interprocess communication (IPC).
+
+### Service vs IntentService. 
+[Answer](https://www.linkedin.com/pulse/service-vs-intentservice-android-anwar-samir/)
+Service is a base class of service implementation. *Service class is run in the application’s main thread which may reduce the application performance*. Thus, IntentService, which is a direct subclass of Service is borned to make things easier. The IntentService is used to perform a certain task in the background. Once done, the *instance of IntentService terminate itself automatically*. Examples for its usage would be to download a certain resources from the Internet.
+
+### What is a JobScheduler? [Detail](http://www.vogella.com/tutorials/AndroidTaskScheduling/article.html)
+The JobScheduler supports batch scheduling of jobs. The Android system can combine jobs so that battery consumption is reduced.
+Here are example when you would use this job scheduler:
+
+* Tasks that should be done once the device is connect to a power supply
+* Tasks that require network access or a Wi-Fi connection.
+* Task that are not critical or user facing
+* Tasks that should be running on a regular basis as batch where the timing is not critical
+
