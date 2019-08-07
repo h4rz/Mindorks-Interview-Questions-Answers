@@ -531,3 +531,73 @@ Basically we are mainly this things by three ways. [Link](http://www.tothenew.co
 1. Explicitly declare in the manifest which screen sizes your application supports.
 2. Provide different layouts for different screen sizes.
 3. Provide different bitmap drawables for different screen densities.
+
+### When should you use a Fragment, rather than an Activity?
+
+This is still a much-debated topic, but the code used to create an Activity is fundamentally more involved than the code used to create a Fragment. The old Activity has to be destroyed, paused or stopped, and a new Activity has to be created. The developer should acknowledge that the best practice is to only use Activities when you need to swap the entire screen, and use fragments everywhere else.
+
+Bonus points if the Android developer mentions any of the following use cases, where you’ll almost always use a Fragment, rather than an Activity:
+
+ 1. When you’re working with UI components or behavior that you’re going to use across multiple Activities.
+ 2. When you’re using one of the navigational methods that are closely linked to fragments, such as swipe views.
+ 3. When your users would benefit from seeing two different layouts side-by-side.
+ 4. When you have data that needs to persist across Activity restarts (i.e you need to use retained fragments).
+ 
+ ### You’re replacing one Fragment with another — how do you ensure that the user can return to the previous Fragment, by pressing the Back button?
+ 
+This question provides an insight into the app developer’s understanding of the lifecycle of dynamic fragments, as well as Fragment transactions, and the back stack.
+
+If the "Back" button is going to return the user to the previous Fragment, then you’ll need to save each Fragment transaction to the back stack, by calling addToBackStack() before you commit() that transaction.
+
+The developer definitely shouldn’t suggest creating a "Back" button specifically to handle navigating between fragments, but bonus points if they mention that you should never try to commit a FragmentTransaction after calling onSaveInstanceState(), as this can result in an exception.
+
+### How would you create a multi-threaded Android app without using the Thread class?
+
+If you only need to override the run() method and no other Thread methods, then you should implement Runnable.
+
+In particular, be on the lookout for an Android developer demonstrating an understanding that you should only extend from a class when you need to modify some of its functionality.
+
+### What is a ThreadPool? And is it more effective than using several separate Threads?
+
+ThreadPool consists of a task queue and a group of worker threads, which allows it to run multiple parallel instances of a task.
+
+Here, you’re assessing the app developer’s understanding of how multithreading has the potential to improve an app’s performance, but also how it can negatively impact performance when used incorrectly.
+
+Using ThreadPool is more efficient than having multiple operations waiting to run on a single thread, but it also helps you avoid the considerable overhead of creating and destroying a thread every time you require a worker thread.
+
+A thread pool reuses previously created threads to execute current tasks and offers a solution to the problem of thread cycle overhead and resource thrashing. Since the thread is already existing when the request arrives, the delay introduced by thread creation is eliminated, making the application more responsive. 
+
+![example](https://cdncontribute.geeksforgeeks.org/wp-content/uploads/Thread_Pool.jpg)
+
+### What is the relationship between the lifecycle of an AsyncTask and the lifecycle of an Activity? What problems can this result in, and how can these problems be avoided?
+
+An AsyncTask is not tied to the lifecycle of the Activity that contains it. If the Activity is destroyed and a new instance of the Activity is created, the AsyncTask won’t be destroyed. This can lead to a number of problems, but the major ones an Android developer should be aware of are:
+
+* Once the AsyncTask completes, it’ll try to update the former instance of the Activity, resulting in an IllegalArgumentException.
+* Since the AsyncTask maintains a reference to the previous instance of the Activity, that Activity won’t be garbage collected, resulting in a memory leak.
+
+The solution is to avoid using AsyncTasks for long-running background tasks.
+
+### How would you access data in a ContentProvider?
+
+Start by making sure your Android application has the necessary read access permissions. Then, get access to the ContentResolver object by calling getContentResolver() on the Context object, and retrieving the data by constructing a query using ContentResolver.query().
+
+The ContentResolver.query() method returns a Cursor, so you can retrieve data from each column using Cursor methods.
+
+Accessing data is one of the tasks that’s most likely to block the main thread, so the developer should stress the importance of performing data queries on a separate thread.
+
+### What is the difference between Serializable and Parcelable?
+
+During the Android application development process, developers often have to send Java class objects from one activity to another activity using the intent. Developers can opt from the two types of object passing techniques, i.e. Serialization and Parcelable of object.
+
+ In Parcelable, developers write custom code for marshaling and unmarshaling so it creates less garbage objects in comparison to Serialization. The performance of Parcelable over Serialization dramatically improves (around two times faster), because of this custom implementation.
+
+Serialization is a marker interface, which implies the user cannot marshal the data according to their requirements. In Serialization, a marshaling operation is performed on a Java Virtual Machine (JVM) using the Java reflection API. This helps identify the Java objects member and behavior, but also ends up creating a lot of garbage objects. Due to this, the Serialization process is slow in comparison to Parcelable.
+
+Serializable is a standard Java interface that’s easy to integrate into your app, as it doesn’t require any methods. Despite being easy to implement, Serializable uses the Java reflection API, which makes it a slow process that creates lots of temporary objects.
+
+Parcelable is optimized for Android, so it’s faster than Serializable. It’s also fully customizable, so you can be explicit about the serialization process, which results in less garbage objects.
+
+While the developer may acknowledge that implementing Parcelable does require more work, the performance benefits mean that they should advise using Parcelable over Serialization, wherever possible.
+
+[Detail](https://android.jlelse.eu/parcelable-vs-serializable-6a2556d51538)
